@@ -1,6 +1,7 @@
-DROP TABLE IF EXISTS voters;
+DROP TABLE IF EXISTS votes;
 DROP TABLE IF EXISTS candidates;
 DROP TABLE IF EXISTS parties;
+DROP TABLE IF EXISTS voters;
 
 CREATE TABLE parties (
     id INTEGER AUTO_INCREMENT PRIMARY KEY, 
@@ -24,4 +25,16 @@ CREATE TABLE voters (
     email VARCHAR(30) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP 
     -- TIME WILL BE BASED ON WHAT TIME IT IS ACCORDING TO YOUR SERVER, NOT THE CLIENTS MACHINE
-)
+);
+
+CREATE TABLE votes (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    voter_id INTEGER NOT NULL, 
+    candidate_id INTEGER NOT NULL, 
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    -- signifies that values inserted into the voter_id (ex voter id 1 can only appear in this table once)
+    CONSTRAINT uc_voter UNIQUE (voter_id),
+    -- on delete cascase will delete the entire row in the table, not just set value to null
+    CONSTRAINT fk_voter FOREIGN KEY (voter_id) REFERENCES voters(id) ON DELETE CASCADE,
+    CONSTRAINT fk_candidate FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
+);
